@@ -1,0 +1,18 @@
+<configuration debug="true">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger level="INFO" name="com.ning.http.client.providers.netty"/>
+    <logger level="INFO" name="org.asynchttpclient"/>
+    <logger level="INFO" name="software.amazon.awssdk"/>
+
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>
