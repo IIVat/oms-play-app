@@ -17,10 +17,16 @@ object Dependencies {
 
   lazy val sqsSDK = "software.amazon.awssdk" % "sqs" % Version.awsSdkVersion
 
-  lazy val akkaHttp    = "com.typesafe.akka" %% "akka-http"    % Version.akkaHttp
-  lazy val slf4j       = "org.slf4j"         % "slf4j-simple"  % Version.slf4j
-  lazy val circeConfig = "io.circe"          %% "circe-config" % Version.circeConfig
-  lazy val catsEffect  = "org.typelevel"     %% "cats-effect"  % Version.catsEffect
+  lazy val akkaHttp         = "com.typesafe.akka"           %% "akka-http"                  % Version.akkaHttp
+  lazy val slf4j            = "org.slf4j"                   % "slf4j-simple"                % Version.slf4j
+  lazy val circeConfig      = "io.circe"                    %% "circe-config"               % Version.circeConfig
+  lazy val catsEffect       = "org.typelevel"               %% "cats-effect"                % Version.catsEffect
+  lazy val tapir            = "com.softwaremill.sttp.tapir" %% "tapir-core"                 % Version.tapir
+  lazy val tapirCirce       = "com.softwaremill.sttp.tapir" %% "tapir-json-circe"           % Version.tapir
+  lazy val tapirAkka        = "com.softwaremill.sttp.tapir" %% "tapir-akka-http-server"     % Version.tapir
+  lazy val tapirOpenApiYaml = "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml"   % Version.tapir
+  lazy val tapirOpenApiDoc  = "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"         % Version.tapir
+  lazy val tapirSwagger     = "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-akka-http" % Version.tapir
 
   //storage
   lazy val redis = "com.github.etaty" %% "rediscala" % Version.redis
@@ -32,6 +38,7 @@ object Dependencies {
 
 object Version {
   lazy val akkaHttp        = "10.2.4"
+  lazy val tapir           = "0.19.0-M1"
   lazy val awsSdkVersion   = "2.11.14"
   lazy val akkaVersion     = "2.6.15"
   lazy val alpakka         = "3.0.2"

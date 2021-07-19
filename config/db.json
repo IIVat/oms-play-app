@@ -11,7 +11,7 @@
     },
     {
       "arn": "e9126060-9eab-4b37-8194-e0d64dfb2045",
-      "topicArn": "arn:aws:sns:eu-west-2:123450000001:assignment-topic",
+      "topicArn": "arn:aws:sns:eu-west-2:123450000002:assignment-topic",
       "endpoint": "aws-sqs://assignment-queue?amazonSQSEndpoint=http://sqs:9324&accessKey=&secretKey=",
       "owner": "",
       "protocol": "sqs"
@@ -23,7 +23,7 @@
       "name": "events-topic"
     },
     {
-      "arn": "arn:aws:sns:eu-west-2:123450000001:assignment-topic"
+      "arn": "arn:aws:sns:eu-west-2:123450000002:assignment-topic"
     ,
       "name": "assignment-topic"
     }

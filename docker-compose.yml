@@ -7,11 +7,6 @@ services:
       - ./redis-config:/usr/local/etc/redis
     ports:
       - "6379:6379"
-#    command: redis-server /usr/local/etc/redis/redis.conf
-#networks:
-#  default:
-#    external:
-#      name: external-example
   sqs:
     image: roribio16/alpine-sqs
     container_name: sqs
@@ -20,32 +15,30 @@ services:
       - "9325:9325"
     volumes:
       - ./config/elasticmq.conf:/opt/config/elasticmq.conf
-
   sns:
     image: s12v/sns
     container_name: sns
     ports:
       - "9911:9911"
-#    networks:
-#      - default-nw
     volumes:
       - ./config/db.json:/etc/sns/db.json
     depends_on:
       - sqs
-
   oa-service:
     image: orderassignmentservice:0.1.0-SNAPSHOT
     container_name: order-assignment-service
     ports:
       - "9060:9060"
-    #    networks:
-    #      - default-nw
-#    volumes:
-#      - ./config/db.json:/etc/sns/db.json
     depends_on:
       - sqs
       - sns
-
-#networks:
-#  default-nw:
-#    external: true
+      - redis
+  courier-service:
+    image: courierservice:0.1.0-SNAPSHOT
+    container_name: courier-service
+    ports:
+      - "9070:9070"
+    depends_on:
+      - sqs
+      - sns
+      - redis

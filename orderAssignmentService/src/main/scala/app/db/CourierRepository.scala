@@ -11,13 +11,14 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.util.Failure
 
-trait CourierDao {
+trait CourierRepository {
   def add(courier: Courier): Future[Long]
   def getAndIncr(zone: Zone): Future[Option[UUID]]
   def delete(zone: Zone, id: UUID): Future[Long]
 }
 
-class RedisCourierDao(redisClient: RedisClient)(implicit ec: ExecutionContext) extends CourierDao {
+class RedisCourierRepository(redisClient: RedisClient)(implicit ec: ExecutionContext)
+    extends CourierRepository {
   override def add(courier: Courier): Future[Long] = {
     redisClient.zaddWithOptions(courier.zone.value,
                                 Seq(ZaddOption.NX),

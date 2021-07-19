@@ -18,7 +18,7 @@ import akka.stream.scaladsl.Keep
 import akka.stream.scaladsl.RestartSource
 import akka.stream.scaladsl.Sink
 import app.config.AppConfig
-import app.db.RedisCourierDao
+import app.db.RedisCourierRepository
 import app.model.DecodingError
 import app.model.Event
 import app.model.ProcessingError
@@ -39,7 +39,6 @@ import io.circe.generic.auto._
 import redis.RedisClient
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
-import software.amazon.awssdk.http.nio.netty.NettyNioAsyncHttpClient
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import software.amazon.awssdk.services.sqs.model.Message
 
@@ -55,7 +54,7 @@ object WebServer extends StrictLogging {
 
     logger.info(s"Starting application with the following configuration: $settings")
 
-    implicit val system = ActorSystem("events-system")
+    implicit val system = ActorSystem("assignment-service-system")
 
     implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
@@ -71,7 +70,7 @@ object WebServer extends StrictLogging {
       .build()
 
     //todo replace into separate file
-    val courierDao = new RedisCourierDao(
+    val courierDao = new RedisCourierRepository(
       RedisClient(host = settings.redis.url, settings.redis.port)
     )
     val courierService = new CourierService(courierDao)
@@ -82,10 +81,10 @@ object WebServer extends StrictLogging {
 
     val decider: Supervision.Decider = {
       case NonFatal(e) =>
-        logger.error("Error in the Product Sync Flow", e)
+        logger.error("Error in the Events Flow", e)
         Supervision.Resume
       case fatal =>
-        logger.error("Fatal error in the Product Sync Flow", fatal.getCause)
+        logger.error("Fatal error in the Events Flow", fatal.getCause)
         Supervision.Stop
     }
 
@@ -99,7 +98,6 @@ object WebServer extends StrictLogging {
       .withAttributes(ActorAttributes.supervisionStrategy(decider))
 
     import settings.aws.eventsQueue.restart._
-    //would be great to use source with restart
     val source = RestartSource.withBackoff(
       RestartSettings(minBackoff = minBackoff, maxBackoff = maxBackoff, randomFactor = randomFactor)
         .withMaxRestarts(maxRestarts, minBackoff)
@@ -119,7 +117,16 @@ object WebServer extends StrictLogging {
       )
 
     val decodingFlowDiverted: Flow[Message, (Event, Message), NotUsed] =
-      decodingFlow.divertLeft(to = Sink.onComplete(x => x.getOrElse("Error")))
+      decodingFlow.divertLeft(to = Sink.ignore.mapMaterializedValue(_ => NotUsed))
+
+    val mainFlow = source
+      .via(decodingFlowDiverted)
+      .alsoTo(courierHandler.processFlow.via(ackFlow).to(Sink.ignore))
+      .via(orderAssignmentHandler.processFlow.via(ackFlow))
+      .viaMat(KillSwitches.single)(Keep.right)
+      .toMat(Sink.ignore)(Keep.left)
+      .withAttributes(ActorAttributes.supervisionStrategy(decider))
+      .run()
 
     val route =
       path("status") {
@@ -135,16 +142,7 @@ object WebServer extends StrictLogging {
         _ => logger.info(s"Http server started on ${settings.server.host}: ${settings.server.port}")
       )
 
-    val flow = source
-      .via(decodingFlowDiverted)
-      .alsoTo(courierHandler.processFlow.via(ackFlow).to(Sink.ignore))
-      .via(orderAssignmentHandler.processFlow.via(ackFlow))
-      .viaMat(KillSwitches.single)(Keep.right)
-      .toMat(Sink.ignore)(Keep.left)
-      .withAttributes(ActorAttributes.supervisionStrategy(decider))
-      .run()
-
-    system.registerOnTermination(flow.shutdown())
+    system.registerOnTermination(mainFlow.shutdown())
     system.registerOnTermination(awsSqsClient.close())
   }
 }

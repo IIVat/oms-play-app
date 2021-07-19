@@ -13,20 +13,19 @@ lazy val orderAssignmentService = project
   .settings(Compile / mainClass := Some("app.WebServer"))
   .settings(libraryDependencies ++= assignmentServiceDependencies)
 
-lazy val currierService = project
+lazy val courierService = project
+  .enablePlugins(AshScriptPlugin, DockerPlugin)
   .settings(commonSettings)
-  .settings(dockerExposedPorts := Seq(9060, 9070))
+  .settings(dockerExposedPorts := Seq(9070))
+  .settings(Compile / mainClass := Some("app.WebServer"))
   .settings(libraryDependencies ++= currierServiceDependencies)
 
 lazy val orderManager = project
   .in(file("."))
-  .enablePlugins(AshScriptPlugin)
-  .enablePlugins(JavaAppPackaging)
-  .enablePlugins(DockerPlugin)
   .settings(commonSettings)
   .settings(moduleName := "order-manager")
   .settings(name := "order-manager")
   .aggregate(
-    currierService,
+    courierService,
     orderAssignmentService
   )

@@ -1,0 +1,97 @@
+openapi: 3.0.3
+info:
+  title: The courier service
+  version: 1.0.0
+paths:
+  /courier/{courierId}:
+    patch:
+      operationId: patchCourierCourierid
+      parameters:
+        - name: courierId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Enable/disable a courier.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourierAvailability'
+            example:
+              available: true
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '400':
+          description: 'Invalid value for: path parameter courierId, Invalid value
+            for: body'
+          content:
+            text/plain:
+              schema:
+                type: string
+  /orders:
+    get:
+      operationId: getOrders
+      parameters:
+        - name: courierId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+        '400':
+          description: 'Invalid value for: query parameter courierId'
+          content:
+            text/plain:
+              schema:
+                type: string
+  /courier:
+    get:
+      operationId: getCourier
+      parameters:
+        - name: orderId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+        '400':
+          description: 'Invalid value for: query parameter orderId'
+          content:
+            text/plain:
+              schema:
+                type: string
+components:
+  schemas:
+    CourierAvailability:
+      required:
+        - available
+      type: object
+      properties:
+        available:
+          type: boolean

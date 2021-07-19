@@ -54,5 +54,19 @@ object Settings {
     sqsSDK
   ) ++ akka ++ alpakka ++ circe
 
-  lazy val currierServiceDependencies = Seq()
+  lazy val currierServiceDependencies = Seq(
+    akkaHttp,
+    circeConfig,
+    catsEffect,
+    logback,
+    logging,
+    redis,
+    sqsSDK,
+    tapir,
+    tapirCirce,
+    tapirAkka,
+    tapirOpenApiYaml,
+    tapirOpenApiDoc,
+    tapirSwagger
+  ) ++ akka ++ alpakka ++ circe
 }
