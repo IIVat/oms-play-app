@@ -1,7 +1,7 @@
 package app.services
 
 import app.db.OrderRepository
-import app.model.OrderAssignment
+import app.models.OrderAssignment
 
 import java.util.UUID
 import scala.concurrent.Future

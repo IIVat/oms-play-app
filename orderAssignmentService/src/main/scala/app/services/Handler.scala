@@ -1,4 +1,4 @@
-package app.service
+package app.services
 
 import akka.NotUsed
 import akka.stream.scaladsl.Flow

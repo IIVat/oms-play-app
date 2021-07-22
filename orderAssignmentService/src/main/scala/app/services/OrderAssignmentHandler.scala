@@ -1,4 +1,4 @@
-package app.service
+package app.services
 
 import akka.NotUsed
 import akka.stream.FlowShape
@@ -8,7 +8,7 @@ import akka.stream.scaladsl.GraphDSL
 import akka.stream.scaladsl.Sink
 import akka.stream.scaladsl.Unzip
 import akka.stream.scaladsl.Zip
-import app.model._
+import app.models._
 import cats.implicits._
 import io.circe.generic.auto._
 import io.circe.parser.decode
@@ -18,7 +18,7 @@ import software.amazon.awssdk.services.sqs.model.Message
 
 import scala.concurrent.ExecutionContext
 
-class OrderAssignmentHandler(courierService: CourierService, snsPublisher: Publisher)(
+class OrderAssignmentHandler(courierService: OrderAssignmentService, snsPublisher: Publisher)(
     implicit ec: ExecutionContext
 ) extends Handler[(Event, Message), ProcessingError, (OrderAssignment, Message)] {
   override type Out1 = (AddOrder, Message)
@@ -38,10 +38,9 @@ class OrderAssignmentHandler(courierService: CourierService, snsPublisher: Publi
       .mapAsync(4) {
         case (addOrder, msg) =>
           courierService
-            .getAndIncr(addOrder.zone)
-            .map { x =>
-              x.map(courierId => (OrderAssignment(addOrder.orderId, courierId), msg))
-                .toRight(PersistenceError("Couriers is not available. Wait in queue."))
+            .checkAndAssign(addOrder)
+            .map {
+              _.map(_ -> msg).toRight(PersistenceError("Couriers is not available. Wait in queue."))
             }
       }
 

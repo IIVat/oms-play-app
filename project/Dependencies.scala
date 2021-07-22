@@ -17,16 +17,19 @@ object Dependencies {
 
   lazy val sqsSDK = "software.amazon.awssdk" % "sqs" % Version.awsSdkVersion
 
-  lazy val akkaHttp         = "com.typesafe.akka"           %% "akka-http"                  % Version.akkaHttp
-  lazy val slf4j            = "org.slf4j"                   % "slf4j-simple"                % Version.slf4j
-  lazy val circeConfig      = "io.circe"                    %% "circe-config"               % Version.circeConfig
-  lazy val catsEffect       = "org.typelevel"               %% "cats-effect"                % Version.catsEffect
-  lazy val tapir            = "com.softwaremill.sttp.tapir" %% "tapir-core"                 % Version.tapir
-  lazy val tapirCirce       = "com.softwaremill.sttp.tapir" %% "tapir-json-circe"           % Version.tapir
-  lazy val tapirAkka        = "com.softwaremill.sttp.tapir" %% "tapir-akka-http-server"     % Version.tapir
-  lazy val tapirOpenApiYaml = "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml"   % Version.tapir
-  lazy val tapirOpenApiDoc  = "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"         % Version.tapir
-  lazy val tapirSwagger     = "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-akka-http" % Version.tapir
+  lazy val akkaHttp         = "com.typesafe.akka"             %% "akka-http"                  % Version.akkaHttp
+  lazy val slf4j            = "org.slf4j"                     % "slf4j-simple"                % Version.slf4j
+  lazy val circeConfig      = "io.circe"                      %% "circe-config"               % Version.circeConfig
+  lazy val catsEffect       = "org.typelevel"                 %% "cats-effect"                % Version.catsEffect
+  lazy val tapir            = "com.softwaremill.sttp.tapir"   %% "tapir-core"                 % Version.tapir
+  lazy val tapirCirce       = "com.softwaremill.sttp.tapir"   %% "tapir-json-circe"           % Version.tapir
+  lazy val tapirAkka        = "com.softwaremill.sttp.tapir"   %% "tapir-akka-http-server"     % Version.tapir
+  lazy val tapirOpenApiYaml = "com.softwaremill.sttp.tapir"   %% "tapir-openapi-circe-yaml"   % Version.tapir
+  lazy val tapirOpenApiDoc  = "com.softwaremill.sttp.tapir"   %% "tapir-openapi-docs"         % Version.tapir
+  lazy val tapirSwagger     = "com.softwaremill.sttp.tapir"   %% "tapir-swagger-ui-akka-http" % Version.tapir
+  lazy val sttp             = "com.softwaremill.sttp.client3" %% "core"                       % Version.sttpClient
+  lazy val sttpCirce        = "com.softwaremill.sttp.client3" %% "circe"                      % Version.sttpClient
+  lazy val sttpAkka         = "com.softwaremill.sttp.client3" %% "akka-http-backend"          % Version.sttpClient
 
   //storage
   lazy val redis = "com.github.etaty" %% "rediscala" % Version.redis
@@ -51,5 +54,5 @@ object Version {
   lazy val logback         = "1.2.3"
   lazy val redis           = "1.9.0"
   lazy val logstashVersion = "6.6"
-
+  lazy val sttpClient      = "3.3.11"
 }

@@ -1,19 +1,20 @@
-package app.service
+package app.services
 
 import akka.NotUsed
 import akka.stream.alpakka.sqs.MessageAction
-import akka.stream.alpakka.sqs.SqsAckResult
 import akka.stream.scaladsl._
-import app.model._
+import app.models._
 import cats.implicits._
+import com.typesafe.scalalogging.StrictLogging
 import io.circe.parser.decode
 import io.circe.generic.auto._
 import software.amazon.awssdk.services.sqs.model.Message
 
 import scala.concurrent.ExecutionContext
 
-class CourierHandler(courierService: CourierService)(implicit ec: ExecutionContext)
-    extends Handler[(Event, Message), ProcessingError, Message] {
+class CourierHandler(courierService: OrderAssignmentService)(implicit ec: ExecutionContext)
+    extends Handler[(Event, Message), ProcessingError, Message]
+    with StrictLogging {
 
   override type Out1 = (AddCourier, Message)
 

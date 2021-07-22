@@ -29,7 +29,6 @@ object Settings {
       ),
       javacOptions ++= Seq("-g", "-target", "11", "-encoding", "UTF-8"),
       dockerBaseImage := "adoptopenjdk/openjdk11:x86_64-alpine-jre-11.0.6_10",
-      Docker / daemonUserUid := None,
       Docker / daemonUser := "daemon",
       logLevel := Level.Info,
       version := (ThisBuild / version).value,
@@ -43,6 +42,16 @@ object Settings {
   }
 
   import Dependencies._
+
+  lazy val orderManagerDependencies = Seq(
+    circeConfig,
+    catsEffect,
+    logback,
+    logging,
+    sttp,
+    sttpCirce,
+    sttpAkka
+  ) ++ akka ++ alpakka ++ circe
 
   lazy val assignmentServiceDependencies = Seq(
     akkaHttp,

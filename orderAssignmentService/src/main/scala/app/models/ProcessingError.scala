@@ -1,4 +1,4 @@
-package app.model
+package app.models
 
 sealed trait ProcessingError
 case class DecodingError(msg: String)    extends ProcessingError

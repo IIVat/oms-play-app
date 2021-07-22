@@ -18,7 +18,7 @@ class OrderRepositoryImpl(redisClient: RedisClient)(implicit ec: ExecutionContex
     val tx = redisClient.multi()
     tx.exec()
     tx.hset(orderId.toString, "courierId", courierId.toString)
-    val result = tx.lpush(courierId.toString, orderId.toString)
+    val result = tx.sadd(courierId.toString, orderId.toString)
     tx.exec()
     result
   }

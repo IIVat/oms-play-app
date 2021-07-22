@@ -4,9 +4,9 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server._
 import akka.stream.Materializer
 import akka.stream.scaladsl.Source
-import app.model.CourierAvailability
-import app.model.AddCourier
-import app.model.Zone
+import app.models.CourierAvailability
+import app.models.AddCourier
+import app.models.Zone
 import app.services.CourierService
 import app.services.OrderService
 import app.services.SnsPublisher
@@ -94,5 +94,6 @@ class Router(courierService: CourierService, orderService: OrderService, snsPubl
                                        "1.0.0")
   val openApiYml: String = openApiDocs.toYaml
 
-  def routers: Route = ordersRoute ~ enableCourierRoute ~ new SwaggerAkka(openApiYml).routes
+  def routers: Route =
+    courierByOrderRoute ~ ordersRoute ~ enableCourierRoute ~ new SwaggerAkka(openApiYml).routes
 }

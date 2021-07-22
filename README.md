@@ -1,25 +1,19 @@
-*How to run*
-- ```cd {your-path}/order-management-system```
-- ```sbt ";project courierService; docker:publishLocal; project orderAssignmentService; docker:publishLocal;"```
-- ```docker-compose up```
+*How to run end2end test*
+- ```sh run-e2e.sh```
 
-Note: because of lack of time I didn't implement integration tests.
-the services compiles, can be run by docker-compose. You can publish a message into
-events sns:
+*How to run app*
+- ```docker-compose up```
 
 *AddCourier:*
 ```json
- aws --endpoint-url=http://localhost:9911 sns publish --topic-arn arn:aws:sns:eu-west-2:123450000001:events-topic --region eu-west-2 --message "{\"courierId\":\"z97261aa-2907-498e-aa24-3bce25590a46\",\"name\":\"first_courirer\",\"zone\":\"S\",\"isAvailable\":true}"  
+ aws --endpoint-url=http://localhost:9911 sns publish --topic-arn arn:aws:sns:eu-west-2:123450000001:events-topic --region eu-west-2 --message "{\"courierId\":\"a97261aa-2907-498e-aa24-3bce25590a46\",\"name\":\"first_courirer\",\"zone\":\"S\",\"isAvailable\":true}"  
 ```
 *AddOrder:*
 ```json
-aws --endpoint-url=http://localhost:9911 sns publish --topic-arn arn:aws:sns:eu-west-2:123450000001:events-topic --region eu-west-2 --message "{\"orderId\":\"s87261aa-2907-498e-aa24-3bce25590a46\",\"details\":\"Buy something\",\"zone\":\"S\",\"addedAt\":\"2021-07-18T10:22:10.170682Z\"}"
+aws --endpoint-url=http://localhost:9911 sns publish --topic-arn arn:aws:sns:eu-west-2:123450000001:events-topic --region eu-west-2 --message "{\"orderId\":\"b87261aa-2907-498e-aa24-3bce25590a46\",\"details\":\"Buy something\",\"zone\":\"S\",\"addedAt\":\"2021-07-18T10:22:10.170682Z\"}"
 ```
 then you can observe the assignment message in assignment queue ```http://localhost:9325```
 
-Yet the message cannot be polled by CourierService.
-I will try to fix it this evening (19.07), but would be grateful if you have a look 
-into code
 
 *Monitoring:*
 - ```http://localhost:9325``` - sqs ui

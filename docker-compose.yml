@@ -1,12 +1,19 @@
 version: '3.9'
 
 services:
-  redis:
+  oa-redis:
     image: redis:6.2.0-alpine
     volumes:
       - ./redis-config:/usr/local/etc/redis
     ports:
       - "6379:6379"
+  courier-redis:
+    image: redis:6.2.0-alpine
+    volumes:
+      - ./redis-config:/usr/local/etc/redis
+    command: --port 6380
+    ports:
+      - "6380:6380"
   sqs:
     image: roribio16/alpine-sqs
     container_name: sqs
@@ -32,7 +39,7 @@ services:
     depends_on:
       - sqs
       - sns
-      - redis
+      - oa-redis
   courier-service:
     image: courierservice:0.1.0-SNAPSHOT
     container_name: courier-service
@@ -41,4 +48,4 @@ services:
     depends_on:
       - sqs
       - sns
-      - redis
+      - courier-redis

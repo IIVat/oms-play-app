@@ -1,4 +1,4 @@
-package app.model
+package app.models
 
 import java.time.Instant
 import java.util.UUID

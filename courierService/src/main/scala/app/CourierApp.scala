@@ -28,7 +28,7 @@ import java.net.URI
 import scala.concurrent.ExecutionContextExecutor
 import scala.util.control.NonFatal
 
-object WebServer extends App with StrictLogging {
+object CourierApp extends App with StrictLogging {
   import io.circe.config.syntax._
 
   val settings = parser.decodeF[IO, AppConfig]().unsafeRunSync()

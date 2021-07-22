@@ -21,7 +21,7 @@ class CourierRepositoryImpl(redisClient: RedisClient)(implicit ec: ExecutionCont
 
   override def getOrders(courierId: UUID): Future[Seq[UUID]] = {
     redisClient
-      .lrange[String](courierId.toString, 0, -1)
+      .smembers[String](courierId.toString)
       .map(_.map(UUID.fromString))
   }
 }

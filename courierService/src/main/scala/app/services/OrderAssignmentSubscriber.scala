@@ -4,13 +4,12 @@ import akka.NotUsed
 import akka.stream.alpakka.sqs.MessageAction
 import akka.stream.scaladsl.Flow
 import akka.stream.scaladsl.Sink
-import app.model.DecodingError
-import app.model.OrderAssignment
-import app.model.PersistenceError
-import app.model.ProcessingError
+import app.models._
 import app.utils.FlowOps.FlowEitherOps
 import cats.implicits._
+import io.circe.parser._
 import io.circe.generic.auto._
+import io.circe.Json
 import io.circe.parser
 import software.amazon.awssdk.services.sqs.model.Message
 
@@ -45,10 +44,18 @@ class OrderAssignmentSubscriber(orderService: OrderService)(implicit ec: Executi
 
   val decodingFlow: Flow[Message, Either[ProcessingError, (OrderAssignment, Message)], NotUsed] =
     Flow.fromFunction { msg =>
-      parser
-        .decode[OrderAssignment](msg.body())
-        .leftMap(error => DecodingError(error.getMessage))
-        .map(_ -> msg)
+      val sqsMessage =
+        decode[SqsMessage](io.circe.parser.parse(msg.body).getOrElse(Json.Null).noSpaces)
+          .map(m => (m.Message, msg))
+          .leftMap(error => DecodingError(error.getMessage))
+
+      sqsMessage
+        .flatMap {
+          case (body, msg) =>
+            decode[OrderAssignment](body)
+              .leftMap(error => DecodingError(error.getMessage))
+              .map(_ -> msg)
+        }
     }
 
   val persistingFlow: Flow[(OrderAssignment, Message), Either[ProcessingError, Message], NotUsed] =
