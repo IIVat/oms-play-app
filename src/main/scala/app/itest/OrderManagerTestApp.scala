@@ -146,12 +146,14 @@ object OrderManagerTestApp extends App with StrictLogging {
 
   logger.info("Publishing events to SNS")
 
-  for {
+  val publishF = for {
     _ <- snsStream(orderEvents ++ courierEvents)
   } yield {
     orderEvents.foreach(event => logger.info(s"Order event $event was published to SNS"))
     courierEvents.foreach(event => logger.info(s"Courier event $event was published to SNS"))
   }
+
+  Await.ready(publishF, 10.seconds)
 
   logger.info("It can take ~90 sec. Waiting ....")
 
@@ -197,7 +199,7 @@ object OrderManagerTestApp extends App with StrictLogging {
     sys.registerOnTermination(awsSnsClient.close())
   }
 
-  Await.result(resF, 30.seconds)
+  Await.result(resF, 10.seconds)
 
   System.exit(1)
 }

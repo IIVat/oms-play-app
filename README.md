@@ -2,7 +2,7 @@
 - ```sh run-e2e.sh```
 
 *How to run app*
-- ```docker-compose up```
+- ```sh run.sh```
 
 *AddCourier:*
 ```json
