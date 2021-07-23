@@ -1,6 +1,10 @@
 *How to run end2end test*
 - ```sh run-e2e.sh```
 
+**Note:** Please, try to run the test several times. Sometimes test failing, because some events goes into DLQ.
+Not sure what is a cause right now, maybe are wrong settings of fake queue.
+However, in most cases the test is successful. 
+
 *How to run app*
 - ```sh run.sh```
 
