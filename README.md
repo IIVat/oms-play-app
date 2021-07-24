@@ -1,10 +1,6 @@
 *How to run end2end test*
 - ```sh run-e2e.sh```
 
-**Note:** Please, try to run the test several times. Sometimes test failing, because some events goes into DLQ.
-Not sure what is a cause right now, maybe are wrong settings of fake queue.
-However, in most cases the test is successful. 
-
 *How to run app*
 - ```sh run.sh```
 
@@ -62,19 +58,6 @@ then you can observe the assignment message in assignment queue ```http://localh
    - get courier for specific order
    - mark courier available, which spawns AddCourier event and publish it into event-sqs
     
-*Notes:* 
- - I would prefer to have instead of Redis some RDBMS in courier service because of `one to many` relation of order-courier
-   pair and for having more robust consistency of the data model.
--  I would connect OAS to Cassandra (or any other suitable storage) for storing an events log, because  
-  it would be safe to have events replay mechanism for reliability purposes.
-- markAvailable endpoint looks like addCourier in my implementation, possibly it breaks tasks
-  constraint. However, I decided to spawn the event in the service, it looks naturally.
-- I would prefer to have OrderService, CourierService and AssignmentService for handling
-  correspondent events, but came up with the idea later.
-- I had a fun working on the task, but honestly the task is time consuming. 8 hours for the task is arguable.
-   
-
-     
   
 
 
